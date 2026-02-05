@@ -6,6 +6,17 @@ PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
 LOG_FILE="./deploy.log"
 TIME_STAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
+# Load environment variables from .env file
+if [ -f "$SCRIPT_DIR/.env" ]; then
+    export $(cat "$SCRIPT_DIR/.env" | grep -v '#' | xargs)
+fi
+
+# Configure git with credentials if provided
+if [ -n "$GIT_USERNAME" ] && [ -n "$GIT_TOKEN" ]; then
+    git config --global credential.helper store
+    echo "https://${GIT_USERNAME}:${GIT_TOKEN}@github.com" > ~/.git-credentials
+fi
+
 # Pull and restart only if there are changes
 cd "$PROJECT_ROOT"
 git fetch origin
