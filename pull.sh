@@ -3,7 +3,7 @@
 # Get the directory where this script is located
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(dirname "$SCRIPT_DIR")"
-LOG_FILE="./deploy.log"
+LOG_FILE="$SCRIPT_DIR/deploy.log"
 TIME_STAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
 # Load environment variables from .env file
@@ -20,8 +20,12 @@ fi
 # Pull and restart only if there are changes
 cd "$PROJECT_ROOT"
 git fetch origin
-if ! git diff --quiet HEAD origin/main; then
-    git pull origin main
+
+# Detect the default branch name
+DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD | sed 's@^refs/remotes/origin/@@')
+
+if ! git diff --quiet HEAD origin/$DEFAULT_BRANCH; then
+    git pull origin $DEFAULT_BRANCH
     DEPLOY_OUTPUT=$(bash deploy.sh 2>&1)
     DEPLOY_STATUS=$?
     if [ $DEPLOY_STATUS -eq 0 ]; then

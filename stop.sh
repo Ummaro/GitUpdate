@@ -1,7 +1,8 @@
 #!/bin/bash
 
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 TIME_STAMP=$(date +"%Y-%m-%d %H:%M:%S")
-LOG_FILE="./deploy.log"
+LOG_FILE="$SCRIPT_DIR/deploy.log"
 
 # Remove the cron job
 if crontab -l 2>/dev/null | grep -q "Git-Deployer"; then

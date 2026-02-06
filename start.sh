@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-LOG_FILE="./deploy.log"
+LOG_FILE="$SCRIPT_DIR/deploy.log"
 TIME_STAMP=$(date +"%Y-%m-%d %H:%M:%S")
 
 # Pull and restart only if there are changes
