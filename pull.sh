@@ -21,16 +21,9 @@ fi
 cd "$PROJECT_ROOT"
 git fetch origin
 
-# Detect the default branch name - try multiple methods
-DEFAULT_BRANCH=$(git ls-remote --symref origin HEAD | head -1 | grep -oP 'refs/heads/\K.*')
-if [ -z "$DEFAULT_BRANCH" ]; then
-    # Fallback: try to get the tracking branch of current HEAD
-    DEFAULT_BRANCH=$(git symbolic-ref refs/remotes/origin/HEAD 2>/dev/null | sed 's@^refs/remotes/origin/@@')
-fi
-if [ -z "$DEFAULT_BRANCH" ]; then
-    # Final fallback: use 'main' as default
-    DEFAULT_BRANCH="main"
-fi
+# Detect the default branch name
+DEFAULT_BRANCH=$(git config --local --get branch.main.merge 2>/dev/null | sed 's@refs/heads/@@')
+echo "Default branch detected: $DEFAULT_BRANCH" >> "$LOG_FILE"
 
 if ! git diff --quiet HEAD origin/$DEFAULT_BRANCH 2>/dev/null; then
     git pull origin $DEFAULT_BRANCH
